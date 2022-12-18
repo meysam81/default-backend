@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - meysam/dev
   schedule:
     - cron: "* * */1 * *"
 
@@ -45,6 +46,7 @@ jobs:
         with:
           push: true
           context: .
+          platforms: linux/amd64,linux/arm64,linux/arm/v8,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,darwin/amd64,darwin/arm64,windows/amd64,windows/arm64
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:latest
