@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "* * */1 * *"
+    - cron: "0 12 */1 * *"
 
 env:
   IMAGE_REPOSITORY: ${{ github.repository }}
