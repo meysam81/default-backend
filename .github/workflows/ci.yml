@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "0 12 */1 * *"
+
+jobs:
+  build-edge:
+    if: |
+      contains(fromJson('["push","pull_request"]'), github.event_name) &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build docker
+        uses: meysam81/infra/actions/build-docker@main
+        with:
+          image-name: ghcr.io/${{ github.repository }}
+          image-extra-tags: ghcr.io/${{ github.repository }}:${{ github.run_id }}
+          kubescape: true
+          kubescape-upload-sarif: true
+
+  build-stable:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build docker
+        uses: meysam81/infra/actions/build-docker@main
+        with:
+          image-name: ghcr.io/${{ github.repository }}
+          image-extra-tags: ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+
+  sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
