@@ -2,8 +2,7 @@ FROM curlimages/curl:latest AS entrypoint
 
 USER root
 
-RUN curl -sSLo /usr/local/bin/index.html ${INDEX} && \
-    if [ "$(uname -m)" = "x86_64" ]; then \
+RUN if [ "$(uname -m)" = "x86_64" ]; then \
       curl -sSLo /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64; \
     elif [ "$(uname -m)" = "aarch64" ]; then \
       curl -sSLo /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_aarch64; \
