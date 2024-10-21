@@ -11,7 +11,7 @@ WORKDIR ${DOWNLOAD_DIR}
 
 RUN curl -sSLo ${DOWNLOAD_DIR}/index.html ${INDEX} && \
     if [ "$(uname -m)" = "x86_64" ]; then \
-      curl -sSLo ${DOWNLOAD_DIR}/dumb-init ${DUMB_INIT}; \
+      curl -sSLo ${DOWNLOAD_DIR}/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64; \
     elif [ "$(uname -m)" = "aarch64" ]; then \
       curl -sSLo ${DOWNLOAD_DIR}/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_aarch64; \
     elif [ "$(uname -m)" = "arm64" ]; then \
