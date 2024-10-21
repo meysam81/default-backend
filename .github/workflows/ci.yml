@@ -13,7 +13,8 @@ on:
     - cron: "0 12 */1 * *"
 
 permissions:
-  contents: write
+  contents: read
+  packages: write
   pull-requests: write
   security-events: write
 
