@@ -32,7 +32,7 @@ default backend, usually useful for the default rule of any load balancer.
 ## How to Run?
 
 ```bash
-docker run -d -p 8080:80 --name default-backend meysam81/default-backend
+docker run -d -p 8080:80 --name default-backend ghcr.io/meysam81/default-backend
 ```
 
 ## Visual
