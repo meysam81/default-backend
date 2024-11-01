@@ -1,33 +1,31 @@
-FROM curlimages/curl:latest AS entrypoint
+FROM curlimages/curl:latest AS bins
+
+ARG STATIC_WEB_SERVER_VERSION="v2.33.0"
 
 USER root
+WORKDIR /downloads
 
 RUN if [ "$(uname -m)" = "x86_64" ]; then \
-      curl -sSLo /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64; \
+      curl -fLo sws.tar.gz \
+        https://github.com/static-web-server/static-web-server/releases/download/${STATIC_WEB_SERVER_VERSION}/static-web-server-${STATIC_WEB_SERVER_VERSION}-x86_64-unknown-linux-musl.tar.gz; \
     elif [ "$(uname -m)" = "aarch64" ]; then \
-      curl -sSLo /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_aarch64; \
-    elif [ "$(uname -m)" = "arm64" ]; then \
-      curl -sSLo /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_arm64.deb; \
-    elif [ "$(uname -m)" = "ppc64le" ]; then \
-      curl -sSLo /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_ppc64le; \
+      curl -fLo sws.tar.gz \
+      https://github.com/static-web-server/static-web-server/releases/download/${STATIC_WEB_SERVER_VERSION}/static-web-server-${STATIC_WEB_SERVER_VERSION}-aarch64-unknown-linux-musl.tar.gz; \
     elif [ "$(uname -m)" = "s390x" ]; then \
-      curl -sSLo /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_s390x; \
+      curl -fLo sws.tar.gz \
+        https://github.com/static-web-server/static-web-server/releases/download/${STATIC_WEB_SERVER_VERSION}/static-web-server-${STATIC_WEB_SERVER_VERSION}-s390x-unknown-linux-musl.tar.gz; \
     else \
       echo "Unsupported architecture: $(uname -m)"; exit 1; \
     fi && \
-    chmod +x /usr/local/bin/dumb-init
+    tar xf sws.tar.gz && \
+    find . -name "static-web-server" -exec mv {} /usr/local/bin/static-web-server \;
 
-FROM nginx:alpine
+FROM scratch
 
-COPY index.html /usr/share/nginx/html/index.html
-COPY --from=entrypoint /usr/local/bin/dumb-init /usr/local/bin/dumb-init
+WORKDIR /app
+EXPOSE 8000
 
-RUN if [ "$(uname -m)" = "arm64" ]; then \
-      apk add --no-cache dpkg; \
-      mv /usr/local/bin/dumb-init /tmp/dumb-init.deb \
-      dpkg -i /tmp/dumb-init.deb; \
-      rm -f /tmp/dumb-init.deb; \
-    fi
+COPY public/index.html .
+COPY --from=bins /usr/local/bin/static-web-server /usr/local/bin/static-web-server
 
-ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
-CMD ["/docker-entrypoint.sh", "--", "nginx", "-g", "daemon off;"]
+CMD ["/usr/local/bin/static-web-server", "--host=0.0.0.0", "--port=8000", "--page404=index.html", "--root=/app", "--log-level=info", "--health"]
