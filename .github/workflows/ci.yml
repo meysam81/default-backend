@@ -28,8 +28,12 @@ jobs:
       - name: Build docker
         uses: meysam81/build-docker@v1
         with:
+          dockerhub-password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          image-extra-tags: |
+            ghcr.io/${{ github.repository }}:${{ github.run_id }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.run_id }}
           image-name: ghcr.io/${{ github.repository }}
-          image-extra-tags: ghcr.io/${{ github.repository }}:${{ github.run_id }}
           kubescape: true
           kubescape-upload-sarif: true
 
@@ -40,8 +44,12 @@ jobs:
       - name: Build docker
         uses: meysam81/build-docker@v1
         with:
+          dockerhub-password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          image-extra-tags: |
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}
           image-name: ghcr.io/${{ github.repository }}
-          image-extra-tags: ghcr.io/${{ github.repository }}:${{ github.ref_name }}
 
   sonarcloud:
     if: |
