@@ -32,7 +32,9 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
           image-extra-tags: |
             ghcr.io/${{ github.repository }}:${{ github.run_id }}
+            ghcr.io/${{ github.repository }}:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.run_id }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
           image-name: ghcr.io/${{ github.repository }}
           kubescape: true
           kubescape-upload-sarif: true
