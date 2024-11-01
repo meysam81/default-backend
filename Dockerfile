@@ -13,7 +13,7 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
     elif [ "$(uname -m)" = "s390x" ]; then \
       curl -sSLo /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_s390x; \
     else \
-      echo "Unsupported architecture"; exit 1; \
+      echo "Unsupported architecture: $(uname -m)"; exit 1; \
     fi && \
     chmod +x /usr/local/bin/dumb-init
 
