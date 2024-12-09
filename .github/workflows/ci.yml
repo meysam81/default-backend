@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
   packages: write
   pull-requests: write
   security-events: write
@@ -26,8 +27,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build docker
-        uses: meysam81/build-docker@v1
+        uses: meysam81/build-docker@main
         with:
+          cosign: true
           dockerhub-password: ${{ secrets.DOCKERHUB_PASSWORD }}
           dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
           image-extra-tags: |
@@ -62,8 +64,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build docker
-        uses: meysam81/build-docker@v1
+        uses: meysam81/build-docker@main
         with:
+          cosign: true
           dockerhub-password: ${{ secrets.DOCKERHUB_PASSWORD }}
           dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
           image-extra-tags: |
