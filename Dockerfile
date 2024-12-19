@@ -1,31 +1,10 @@
-FROM curlimages/curl:latest AS bins
+FROM ghcr.io/static-web-server/static-web-server:2
 
-ARG STATIC_WEB_SERVER_VERSION="v2.33.0"
+ENV SERVER_PORT=8000 \
+    SERVER_ERROR_PAGE_404=index.html \
+    SERVER_FALLBACK_PAGE=index.html \
+    SERVER_COMPRESSION_LEVEL=fastest \
+    SERVER_LOG_REMOTE_ADDRESS=true \
+    SERVER_HEALTH=true
 
-USER root
-WORKDIR /downloads
-
-RUN if [ "$(uname -m)" = "x86_64" ]; then \
-      curl -fLo sws.tar.gz \
-        https://github.com/static-web-server/static-web-server/releases/download/${STATIC_WEB_SERVER_VERSION}/static-web-server-${STATIC_WEB_SERVER_VERSION}-x86_64-unknown-linux-musl.tar.gz; \
-    elif [ "$(uname -m)" = "aarch64" ]; then \
-      curl -fLo sws.tar.gz \
-      https://github.com/static-web-server/static-web-server/releases/download/${STATIC_WEB_SERVER_VERSION}/static-web-server-${STATIC_WEB_SERVER_VERSION}-aarch64-unknown-linux-musl.tar.gz; \
-    elif [ "$(uname -m)" = "s390x" ]; then \
-      curl -fLo sws.tar.gz \
-        https://github.com/static-web-server/static-web-server/releases/download/${STATIC_WEB_SERVER_VERSION}/static-web-server-${STATIC_WEB_SERVER_VERSION}-s390x-unknown-linux-musl.tar.gz; \
-    else \
-      echo "Unsupported architecture: $(uname -m)"; exit 1; \
-    fi && \
-    tar xf sws.tar.gz && \
-    find . -name "static-web-server" -exec mv {} /usr/local/bin/static-web-server \;
-
-FROM scratch
-
-WORKDIR /app
-EXPOSE 8000
-
-COPY public/index.html .
-COPY --from=bins /usr/local/bin/static-web-server /usr/local/bin/static-web-server
-
-CMD ["/usr/local/bin/static-web-server", "--host=0.0.0.0", "--port=8000", "--page404=index.html", "--root=/app", "--log-level=info", "--health"]
+COPY public/index.html /public
