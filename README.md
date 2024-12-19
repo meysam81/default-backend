@@ -1,5 +1,7 @@
 # Default Backend
 
+One-page HTML distroless docker container for default backend, useful as the default rule for any load balancer.
+
 [![Docker Pulls](https://img.shields.io/docker/pulls/meysam81/default-backend)](https://hub.docker.com/r/meysam81/default-backend)
 [![Docker Image Size](https://img.shields.io/docker/image-size/meysam81/default-backend?label=docker%20image%20size)](https://hub.docker.com/r/meysam81/default-backend)
 [![Code Size](https://img.shields.io/github/languages/code-size/meysam81/default-backend)](https://github.com/meysam81/default-backend)
@@ -15,26 +17,85 @@
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=meysam81_default-backend&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=meysam81_default-backend)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=meysam81_default-backend&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=meysam81_default-backend)
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [Default Backend](#default-backend)
-  - [Overview](#overview)
-  - [How to Run?](#how-to-run)
-  - [Visual](#visual)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 ## Overview
 
-This is a simple one-page HTML docker image repository that will serve as the
-default backend, usually useful for the default rule of any load balancer.
+A lightweight, security-focused 404 page served from a distroless container,
+perfect for use as a default backend in load balancers and Kubernetes ingress
+controllers.
 
-## How to Run?
+Features dark mode support and responsive design while maintaining minimal
+footprint.
+
+## Features
+
+- 🌓 Automatic dark/light mode based on system preferences
+- 📱 Fully responsive design
+- 🔒 Distroless container for minimal attack surface
+- 🚀 Extremely lightweight (~2MB image size)
+- 🎨 Clean, modern UI
+- ⚡ Zero dependencies
+- 🌐 System font stack for optimal performance
+
+## Quick Start
 
 ```bash
-docker run -d -p 8080:80 --name default-backend ghcr.io/meysam81/default-backend
+docker run -d -p 8000:8000 --name default-backend ghcr.io/meysam81/default-backend
 ```
+
+Then visit http://localhost:8000
+
+## Usage with Load Balancers
+
+### Nginx
+
+```nginx
+server {
+    listen 80 default_server;
+    server_name _;
+
+    location / {
+        proxy_pass http://localhost:8000;
+    }
+}
+```
+
+### Kubernetes Ingress
+
+There's an officially supported Kustomization stack at the following URL:
+
+<https://github.com/meysam81/kustomizations/tree/main/default-backend>
+
+## Security
+
+- Built on Google's distroless container
+- No shell access
+- Minimal base image
+- No external dependencies
+- Regular security updates
+
+## Development
+
+To modify the page:
+
+1. Edit the `public/index.html` file
+2. Build the container:
+
+```bash
+docker build -t default-backend .
+```
+
+## License
+
+Apache 2.0, see [LICENSE](LICENSE).
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Support
+
+- 🐛 [Report a bug](https://github.com/meysam81/default-backend/issues)
+- 💡 [Request a feature](https://github.com/meysam81/default-backend/issues)
 
 ## Visual
 
