@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/meysam81/default-backend/compare/v1.1.0...v1.1.1) (2024-12-19)
+
+
+### Miscellaneous Chores
+
+* **docs:** complete the README ([70b9f2a](https://github.com/meysam81/default-backend/commit/70b9f2ab5f3ca6537aa71d62fc7aeb2c2073c990))
+
 ## [1.1.0](https://github.com/meysam81/default-backend/compare/v1.0.1...v1.1.0) (2024-12-19)
 
 
