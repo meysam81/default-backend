@@ -1,6 +1,9 @@
 FROM ghcr.io/static-web-server/static-web-server:2
 
+EXPOSE 8000
+
 ENV SERVER_PORT=8000 \
+    SERVER_LOG_LEVEL=info \
     SERVER_ERROR_PAGE_404=index.html \
     SERVER_FALLBACK_PAGE=index.html \
     SERVER_COMPRESSION_LEVEL=fastest \
