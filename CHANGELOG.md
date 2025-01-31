@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/meysam81/default-backend/compare/v1.1.1...v1.1.2) (2025-01-31)
+
+
+### Miscellaneous Chores
+
+* lower log level to info ([4d147d1](https://github.com/meysam81/default-backend/commit/4d147d1640b0d7021d37493b2df997811898bf98))
+
 ## [1.1.1](https://github.com/meysam81/default-backend/compare/v1.1.0...v1.1.1) (2024-12-19)
 
 
