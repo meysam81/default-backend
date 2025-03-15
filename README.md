@@ -4,6 +4,7 @@ One-page HTML distroless docker container for default backend, useful as the def
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/meysam81/default-backend)](https://hub.docker.com/r/meysam81/default-backend)
 [![Docker Image Size](https://img.shields.io/docker/image-size/meysam81/default-backend?label=docker%20image%20size)](https://hub.docker.com/r/meysam81/default-backend)
+[![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://developer.mend.io/github/meysam81/default-backend)
 [![Code Size](https://img.shields.io/github/languages/code-size/meysam81/default-backend)](https://github.com/meysam81/default-backend)
 [![Repo Size](https://img.shields.io/github/repo-size/meysam81/default-backend)](https://github.com/meysam81/default-backend)
 [![Language Count](https://img.shields.io/github/languages/count/meysam81/default-backend)](https://github.com/meysam81/default-backend)
@@ -39,7 +40,8 @@ footprint.
 ## Quick Start
 
 ```bash
-docker run -d -p 8000:8000 --name default-backend ghcr.io/meysam81/default-backend
+docker run -dp 8000:8000 --name default-backend \
+  ghcr.io/meysam81/default-backend
 ```
 
 Then visit http://localhost:8000

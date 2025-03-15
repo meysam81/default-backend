@@ -42,37 +42,45 @@ jobs:
           kubescape-upload-sarif: true
           scout-cves: true
 
-  release-please:
+  semantic-release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    outputs:
-      releases_created: ${{ steps.release-please.outputs.releases_created }}
-      tag_name: ${{ steps.release-please.outputs.tag_name }}
     permissions:
       contents: write
+      packages: write
+      issues: write
       pull-requests: write
+      id-token: write
     steps:
-      - id: release-please
-        name: Release please
-        uses: googleapis/release-please-action@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          release-type: simple
-
-  build-stable:
-    needs: release-please
-    if: needs.release-please.outputs.releases_created == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Build docker
+          fetch-depth: 0
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install bun deps
+        run: bun install
+      - id: semantic-release
+        name: Release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: bunx semantic-release@v24
+      - if: steps.semantic-release.outputs.version != ''
+        name: Build docker
         uses: meysam81/build-docker@main
         with:
           cosign: true
           dockerhub-password: ${{ secrets.DOCKERHUB_PASSWORD }}
           dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
           image-extra-tags: |
-            ghcr.io/${{ github.repository }}:${{ needs.release-please.outputs.tag_name }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ needs.release-please.outputs.tag_name }}
+            ghcr.io/${{ github.repository }}:${{ steps.semantic-release.outputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ steps.semantic-release.outputs.version }}
           image-name: ghcr.io/${{ github.repository }}
+          kubescape: true
+          kubescape-upload-sarif: true
+          ref: ${{ steps.semantic-release.outputs.version }}
 
   sonarcloud:
     if: |
