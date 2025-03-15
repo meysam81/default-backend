@@ -81,18 +81,3 @@ jobs:
           kubescape: true
           kubescape-upload-sarif: true
           ref: ${{ steps.semantic-release.outputs.version }}
-
-  sonarcloud:
-    if: |
-      contains(fromJson('["push","pull_request"]'), github.event_name) &&
-      github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
