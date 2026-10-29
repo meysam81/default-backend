@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build docker
-        uses: meysam81/build-docker@main
+        uses: meysam81/build-docker@4702dd58cc9a0c0499fbdfe1e1bf8c23d4bc7c8c # main
         with:
           cosign: true
           dockerhub-password: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -42,7 +42,7 @@ jobs:
           kubescape-upload-sarif: true
           scout-cves: true
 
-  semantic-release:
+  release-please:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
@@ -52,32 +52,23 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - id: release-please
+        name: Release please
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         with:
-          fetch-depth: 0
-      - name: Setup bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      - name: Install bun deps
-        run: bun install
-      - id: semantic-release
-        name: Release
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: bunx semantic-release@v24
-      - if: steps.semantic-release.outputs.version != ''
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+      - if: steps.release-please.outputs.releases_created == 'true'
         name: Build docker
-        uses: meysam81/build-docker@main
+        uses: meysam81/build-docker@4702dd58cc9a0c0499fbdfe1e1bf8c23d4bc7c8c # main
         with:
           cosign: true
           dockerhub-password: ${{ secrets.DOCKERHUB_PASSWORD }}
           dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
           image-extra-tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.semantic-release.outputs.version }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ steps.semantic-release.outputs.version }}
+            ghcr.io/${{ github.repository }}:${{ steps.release-please.outputs.tag_name }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ steps.release-please.outputs.tag_name }}
           image-name: ghcr.io/${{ github.repository }}
           kubescape: true
           kubescape-upload-sarif: true
-          ref: ${{ steps.semantic-release.outputs.version }}
+          ref: ${{ steps.release-please.outputs.tag_name }}
