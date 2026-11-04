@@ -18,6 +18,11 @@ controllers.
 Features dark mode support and responsive design while maintaining minimal
 footprint.
 
+Every request is answered with **HTTP 404** and this page, including `/`:
+a catch-all that answered 200 would tell every scanner probing invented
+hostnames and dotfiles that it found something. `/health` returns 200 for
+load-balancer and Kubernetes probes.
+
 ## Features
 
 - 🌓 Automatic dark/light mode based on system preferences
@@ -35,7 +40,7 @@ docker run -dp 8000:8000 --name default-backend \
   ghcr.io/meysam81/default-backend
 ```
 
-Then visit http://localhost:8000
+Then visit <http://localhost:8000> and expect a 404 with the page.
 
 ## Usage with Load Balancers
 
